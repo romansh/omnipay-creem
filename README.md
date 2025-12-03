@@ -1,3 +1,5 @@
+**Warning: This package is currently in development and not ready for production use. API may change without notice.**
+
 # Omnipay: Creem
 
 **Creem driver for the Omnipay PHP payment processing library**
