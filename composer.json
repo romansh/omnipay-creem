@@ -1,0 +1,40 @@
+{
+    "name": "romansh/omnipay-creem",
+    "type": "library",
+    "description": "Creem driver for Omnipay payment processing library",
+    "keywords": [
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment",
+        "creem",
+        "purchase",
+        "saas"
+    ],
+    "homepage": "https://github.com/romansh/omnipay-creem",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Roman Shalabanov"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Omnipay\\Creem\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "omnipay/common": "^3.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "^3.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
