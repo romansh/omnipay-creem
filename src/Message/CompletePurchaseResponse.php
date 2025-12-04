@@ -3,73 +3,73 @@
 namespace Omnipay\Creem\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
-use Omnipay\Common\Message\RequestInterface;
 
 class CompletePurchaseResponse extends AbstractResponse
 {
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
-        $eventType = $this->data['event_type'] ?? '';
-        
-        return $eventType === 'checkout.completed' || 
-               $eventType === 'subscription.active';
+        return in_array($this->getEventType(), [
+            'checkout.completed',
+            'subscription.active',
+            'subscription.renewed'
+        ], true);
     }
 
-    public function isPending()
+    public function isPending(): bool
     {
-        $eventType = $this->data['event_type'] ?? '';
-        
-        return $eventType === 'subscription.trialing';
+        return $this->getEventType() === 'subscription.trialing';
     }
 
-    public function isCancelled()
+    public function isCancelled(): bool
     {
-        $eventType = $this->data['event_type'] ?? '';
-        
-        return $eventType === 'subscription.canceled' || 
-               $eventType === 'subscription.expired';
+        return in_array($this->getEventType(), [
+            'subscription.canceled',
+            'subscription.expired'
+        ], true);
     }
 
-    public function isRefunded()
+    public function isRefunded(): bool
     {
-        $eventType = $this->data['event_type'] ?? '';
-        
-        return $eventType === 'refund.created';
+        return $this->getEventType() === 'refund.created';
     }
 
-    public function getTransactionReference()
-    {
-        return $this->data['data']['order_id'] ?? 
-               $this->data['data']['subscription_id'] ?? null;
-    }
-
-    public function getTransactionId()
-    {
-        return $this->data['data']['request_id'] ?? null;
-    }
-
-    public function getEventType()
+    public function getEventType(): ?string
     {
         return $this->data['event_type'] ?? null;
     }
 
-    public function getMessage()
+    public function getTransactionId(): ?string
     {
-        return $this->data['message'] ?? null;
+        return $this->data['payload']['metadata']['order_id']
+            ?? $this->data['metadata']['order_id']
+            ?? null;
     }
 
-    public function getCode()
+    public function getTransactionReference(): ?string
+    {
+        return $this->data['payload']['id'] ?? $this->data['id'] ?? null;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->data['message'] ?? $this->data['payload']['status'] ?? 'ok';
+    }
+
+    public function getCode(): ?string
     {
         return $this->data['event_type'] ?? null;
     }
 
-    public function getCustomer()
+    public function getCustomer(): ?array
     {
-        return $this->data['data']['customer'] ?? null;
+        return $this->data['payload']['customer'] ?? $this->data['customer'] ?? null;
     }
 
-    public function getProduct()
+    public function getProduct(): ?array
     {
-        return $this->data['data']['product'] ?? null;
+        return $this->data['payload']['product'] ?? $this->data['product'] ?? null;
     }
+
+    public function getRedirectUrl(): ?string { return null; }
+    public function getPortalUrl(): ?string { return null; }
 }
