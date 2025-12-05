@@ -38,13 +38,23 @@ class PurchaseRequest extends AbstractRequest
             'request_id' => $this->getTransactionId(),
         ];
 
+        // Add customer info if available
+        if ($card = $this->getCard()) {
+            $customer = [];
+            
+            if ($card->getEmail()) {
+                $customer['email'] = $card->getEmail();
+            }
+            
+            if (!empty($customer)) {
+                $data['customer'] = $customer;
+            }
+        }
+
         // Add metadata if available
         $metadata = [];
         
         if ($card = $this->getCard()) {
-            if ($card->getEmail()) {
-                $metadata['email'] = $card->getEmail();
-            }
             if ($card->getName()) {
                 $metadata['name'] = $card->getName();
             }
@@ -56,6 +66,11 @@ class PurchaseRequest extends AbstractRequest
 
         if (!empty($metadata)) {
             $data['metadata'] = $metadata;
+        }
+
+        // Add success URL if provided
+        if ($this->getReturnUrl()) {
+            $data['success_url'] = $this->getReturnUrl();
         }
 
         return $data;

@@ -40,8 +40,8 @@ class CompletePurchaseResponse extends AbstractResponse
 
     public function getTransactionId(): ?string
     {
-        return $this->data['payload']['metadata']['order_id']
-            ?? $this->data['metadata']['order_id']
+        return $this->data['payload']['request_id']
+            ?? $this->data['request_id']
             ?? null;
     }
 
