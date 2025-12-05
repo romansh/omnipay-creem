@@ -3,7 +3,6 @@
 namespace Omnipay\Creem;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\Common\Message\AbstractRequest;
 
 /**
  * Creem Gateway
