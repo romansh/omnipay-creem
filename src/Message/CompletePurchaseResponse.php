@@ -1,4 +1,5 @@
 <?php
+namespace Omnipay\Creem\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 
