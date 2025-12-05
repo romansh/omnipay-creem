@@ -29,17 +29,11 @@ class CompletePurchaseRequest extends AbstractRequest
 
     public function getData()
     {
-        // Get data from webhook callback
-        $data = $this->httpRequest->request->all();
-        
-        if (empty($data)) {
-            $data = json_decode($this->httpRequest->getContent(), true);
-        }
+        $content = $this->httpRequest->getContent();
+        $data = json_decode($content, true);
+        $signature = $this->httpRequest->headers->get('creem-signature');
 
-        // Validate signature if webhook secret is provided
-        $signature = $this->httpRequest->headers->get('x-creem-signature');
-        
-        if ($this->getWebhookSecret() && !$this->validateSignature($data, $signature)) {
+        if ($this->getWebhookSecret() && !$this->validateSignature($content, $signature)) {
             throw new InvalidResponseException('Invalid webhook signature');
         }
 
@@ -51,15 +45,13 @@ class CompletePurchaseRequest extends AbstractRequest
         return $this->response = new CompletePurchaseResponse($this, $data);
     }
 
-    protected function validateSignature($data, $signature)
+    protected function validateSignature(string $payload, ?string $signature): bool
     {
         if (!$signature) {
             return false;
         }
 
-        $jsonData = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $expectedSignature = hash_hmac('sha256', $jsonData, $this->getWebhookSecret());
-
+        $expectedSignature = hash_hmac('sha256', $payload, $this->getWebhookSecret());
         return hash_equals($expectedSignature, $signature);
     }
 }
