@@ -26,15 +26,22 @@
     },
     "require": {
         "php": "^7.4 || ^8.0",
-        "omnipay/common": "^3.0"
+        "omnipay/common": "^3.0",
+        "symfony/http-client": "^7.4",
+        "php-http/httplug": "^2.4",
+        "nyholm/psr7": "^1.8"
     },
     "require-dev": {
-        "omnipay/tests": "^3.0",
         "phpunit/phpunit": "^9.0"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
         }
     }
 }

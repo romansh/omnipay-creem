@@ -19,7 +19,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 
     public function getRedirectUrl()
     {
-        return $this->data['checkout_url'] ?? null; 
+        return $this->data['checkout_url'] ?? null; // FIXED: previously 'url', should be 'checkout_url'
     }
 
     public function getRedirectMethod()
@@ -34,7 +34,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 
     public function getTransactionReference()
     {
-        return $this->data['id'] ?? null; // ID checkout session
+        return $this->data['id'] ?? null; // Checkout session ID
     }
 
     public function getMessage()

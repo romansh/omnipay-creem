@@ -35,7 +35,7 @@ class PurchaseRequest extends AbstractRequest
 
         $data = [
             'product_id' => $this->getProductId(),
-            'request_id' => $this->getTransactionId(),
+            'request_id' => $this->getTransactionId(), // Your internal order ID
         ];
 
         // Add customer info if available

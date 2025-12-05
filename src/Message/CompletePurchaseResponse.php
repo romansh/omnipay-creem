@@ -40,6 +40,7 @@ class CompletePurchaseResponse extends AbstractResponse
 
     public function getTransactionId(): ?string
     {
+        // request_id is your internal order ID passed when creating the checkout
         return $this->data['payload']['request_id']
             ?? $this->data['request_id']
             ?? null;
