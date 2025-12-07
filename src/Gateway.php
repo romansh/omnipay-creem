@@ -21,6 +21,7 @@ class Gateway extends AbstractGateway
         return [
             'apiKey' => '',
             'testMode' => false,
+            'webhookSecret' => ''
         ];
     }
 
@@ -32,6 +33,34 @@ class Gateway extends AbstractGateway
     public function setApiKey($value)
     {
         return $this->setParameter('apiKey', $value);
+    }
+
+    /**
+     * Get the webhook secret key
+     */
+    public function getWebhookSecret()
+    {
+        return $this->getParameter('webhookSecret');
+    }
+
+    /**
+     * Set the webhook secret key
+     */
+    public function setWebhookSecret($value) 
+    {
+        return $this->setParameter('webhookSecret', $value);
+    }
+
+    /**
+     * Replace the internal HTTP Request object with a new one.
+     * This is crucial for webhooks to inject the Laravel Request.
+     * * @param \Symfony\Component\HttpFoundation\Request $httpRequest
+     * @return $this
+     */
+    public function setHttpRequest(\Symfony\Component\HttpFoundation\Request $httpRequest)
+    {
+        $this->httpRequest = $httpRequest;
+        return $this;
     }
 
     /**
