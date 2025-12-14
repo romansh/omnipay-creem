@@ -31,10 +31,23 @@ class CompletePurchaseRequest extends AbstractRequest
     {
         $content = $this->httpRequest->getContent();
         $data = json_decode($content, true);
+        
+        if (!$data) {
+            throw new InvalidResponseException('Invalid webhook payload: not valid JSON');
+        }
+        
+        $webhookSecret = $this->getWebhookSecret();
+        if (!$webhookSecret) {
+            throw new InvalidResponseException('Webhook secret is not configured. Please set webhookSecret parameter.');
+        }
+        
         $signature = $this->httpRequest->headers->get('creem-signature');
-
-        if ($this->getWebhookSecret() && !$this->validateSignature($content, $signature)) {
-            throw new InvalidResponseException('Invalid webhook signature');
+        if (!$signature) {
+            throw new InvalidResponseException('Webhook signature header (creem-signature) is missing');
+        }
+        
+        if (!$this->validateSignature($content, $signature)) {
+            throw new InvalidResponseException('Invalid webhook signature. The signature does not match the expected value.');
         }
 
         return $data;
