@@ -20,8 +20,9 @@ class Gateway extends AbstractGateway
     {
         return [
             'apiKey' => '',
-            'testMode' => false,
-            'webhookSecret' => ''
+            'testMode' => true,
+            'webhookSecret' => '',
+            'productId' => ''
         ];
     }
 
@@ -49,6 +50,16 @@ class Gateway extends AbstractGateway
     public function setWebhookSecret($value) 
     {
         return $this->setParameter('webhookSecret', $value);
+    }
+
+    public function getProductId()
+    {
+        return $this->getParameter('productId');
+    }
+
+    public function setProductId($value)
+    {
+        return $this->setParameter('productId', $value);
     }
 
     /**
