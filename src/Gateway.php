@@ -3,20 +3,44 @@
 namespace Omnipay\Creem;
 
 use Omnipay\Common\AbstractGateway;
+use Omnipay\Creem\Message\PurchaseRequest;
+use Omnipay\Creem\Message\CompletePurchaseRequest;
+use Omnipay\Creem\Message\CustomerPortalRequest;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 /**
  * Creem Gateway
  *
  * @link https://creem.io/
+ * * @method \Omnipay\Common\Message\NotificationInterface acceptNotification(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface authorize(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface completeAuthorize(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface capture(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface refund(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface fetchTransaction(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface void(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface createCard(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface updateCard(array $options = [])
+ * @method \Omnipay\Common\Message\RequestInterface deleteCard(array $options = [])
  */
 class Gateway extends AbstractGateway
 {
-    public function getName()
+    /**
+     * Get the human-readable name of the gateway.
+     *
+     * @return string
+     */
+    public function getName(): string
     {
         return 'Creem';
     }
 
-    public function getDefaultParameters()
+    /**
+     * Get the default parameters for the gateway.
+     *
+     * @return array<string, mixed>
+     */
+    public function getDefaultParameters(): array
     {
         return [
             'apiKey' => '',
@@ -26,85 +50,112 @@ class Gateway extends AbstractGateway
         ];
     }
 
-    public function getApiKey()
+    /**
+     * Get the API Key.
+     *
+     * @return string|null
+     */
+    public function getApiKey(): ?string
     {
         return $this->getParameter('apiKey');
     }
 
-    public function setApiKey($value)
+    /**
+     * Set the API Key.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setApiKey(string $value): self
     {
         return $this->setParameter('apiKey', $value);
     }
 
     /**
-     * Get the webhook secret key
+     * Get the webhook secret key for signature verification.
+     *
+     * @return string|null
      */
-    public function getWebhookSecret()
+    public function getWebhookSecret(): ?string
     {
         return $this->getParameter('webhookSecret');
     }
 
     /**
-     * Set the webhook secret key
+     * Set the webhook secret key.
+     *
+     * @param string $value
+     * @return self
      */
-    public function setWebhookSecret($value) 
+    public function setWebhookSecret(string $value): self
     {
         return $this->setParameter('webhookSecret', $value);
     }
 
-    public function getProductId()
+    /**
+     * Get the Creem Product ID.
+     *
+     * @return string|null
+     */
+    public function getProductId(): ?string
     {
         return $this->getParameter('productId');
     }
 
-    public function setProductId($value)
+    /**
+     * Set the Creem Product ID.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setProductId(string $value): self
     {
         return $this->setParameter('productId', $value);
     }
 
     /**
-     * Replace the internal HTTP Request object with a new one.
-     * This is crucial for webhooks to inject the Laravel Request.
-     * * @param \Symfony\Component\HttpFoundation\Request $httpRequest
-     * @return $this
+     * Replace the internal HTTP Request object.
+     * Crucial for webhooks to handle the payload correctly.
+     *
+     * @param SymfonyRequest $httpRequest
+     * @return self
      */
-    public function setHttpRequest(\Symfony\Component\HttpFoundation\Request $httpRequest)
+    public function setHttpRequest(SymfonyRequest $httpRequest): self
     {
         $this->httpRequest = $httpRequest;
         return $this;
     }
 
     /**
-     * Create a purchase request
+     * Create a purchase request.
      *
-     * @param array $options
-     * @return \Omnipay\Creem\Message\PurchaseRequest
+     * @param array<string, mixed> $options
+     * @return PurchaseRequest
      */
-    public function purchase(array $options = [])
+    public function purchase(array $options = []): PurchaseRequest
     {
-        return $this->createRequest('\Omnipay\Creem\Message\PurchaseRequest', $options);
+        return $this->createRequest(PurchaseRequest::class, $options);
     }
 
     /**
-     * Complete a purchase request
+     * Handle the completion of a purchase (webhooks).
      *
-     * @param array $options
-     * @return \Omnipay\Creem\Message\CompletePurchaseRequest
+     * @param array<string, mixed> $options
+     * @return CompletePurchaseRequest
      */
-    public function completePurchase(array $options = [])
+    public function completePurchase(array $options = []): CompletePurchaseRequest
     {
-        return $this->createRequest('\Omnipay\Creem\Message\CompletePurchaseRequest', $options);
+        return $this->createRequest(CompletePurchaseRequest::class, $options);
     }
 
     /**
-     * Generate customer portal URL
-     * Customers can manage subscriptions and request refunds through the portal
+     * Generate a customer portal URL for subscription management.
      *
-     * @param array $options
-     * @return \Omnipay\Creem\Message\CustomerPortalRequest
+     * @param array<string, mixed> $options
+     * @return CustomerPortalRequest
      */
-    public function customerPortal(array $options = [])
+    public function customerPortal(array $options = []): CustomerPortalRequest
     {
-        return $this->createRequest('\Omnipay\Creem\Message\CustomerPortalRequest', $options);
+        return $this->createRequest(CustomerPortalRequest::class, $options);
     }
 }

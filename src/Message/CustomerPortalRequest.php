@@ -3,48 +3,96 @@
 namespace Omnipay\Creem\Message;
 
 use Omnipay\Common\Message\AbstractRequest;
+use Omnipay\Common\Message\ResponseInterface;
 
+/**
+ * Creem Customer Portal Request
+ *
+ * This request allows you to generate a unique URL for the Creem Customer Billing Portal,
+ * where customers can manage their subscriptions and billing details.
+ */
 class CustomerPortalRequest extends AbstractRequest
 {
-    protected $endpoint = 'https://api.creem.io/v1/customers/billing';
-    protected $testEndpoint = 'https://test-api.creem.io/v1/customers/billing';
+    /**
+     * @var string API Production endpoint for customer billing
+     */
+    protected string $endpoint = 'https://api.creem.io/v1/customers/billing';
 
-    public function getApiKey()
+    /**
+     * @var string API Sandbox endpoint for customer billing
+     */
+    protected string $testEndpoint = 'https://test-api.creem.io/v1/customers/billing';
+
+    /**
+     * Get the API Key.
+     *
+     * @return string|null
+     */
+    public function getApiKey(): ?string
     {
         return $this->getParameter('apiKey');
     }
 
-    public function setApiKey($value)
+    /**
+     * Set the API Key.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setApiKey(string $value): self
     {
         return $this->setParameter('apiKey', $value);
     }
 
-    public function getCustomerId()
+    /**
+     * Get the Creem Customer ID.
+     *
+     * @return string|null
+     */
+    public function getCustomerId(): ?string
     {
         return $this->getParameter('customerId');
     }
 
-    public function setCustomerId($value)
+    /**
+     * Set the Creem Customer ID.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setCustomerId(string $value): self
     {
         return $this->setParameter('customerId', $value);
     }
 
-    public function getData()
+    /**
+     * Prepare the data for the API request.
+     *
+     * @throws \Omnipay\Common\Exception\InvalidRequestException
+     * @return array<string, string>
+     */
+    public function getData(): array
     {
         $this->validate('customerId');
 
         return [
-            'customer_id' => $this->getCustomerId(),
+            'customer_id' => (string) $this->getCustomerId(),
         ];
     }
 
-    public function sendData($data)
+    /**
+     * Send the request to Creem API.
+     *
+     * @param mixed $data The data from getData()
+     * @return ResponseInterface
+     */
+    public function sendData(mixed $data): ResponseInterface
     {
         $url = $this->getTestMode() ? $this->testEndpoint : $this->endpoint;
         
         $headers = [
             'Content-Type' => 'application/json',
-            'x-api-key' => $this->getApiKey(),
+            'x-api-key'    => $this->getApiKey(),
         ];
 
         $httpResponse = $this->httpClient->request(
@@ -56,6 +104,6 @@ class CustomerPortalRequest extends AbstractRequest
 
         $responseData = json_decode($httpResponse->getBody()->getContents(), true);
 
-        return $this->response = new CustomerPortalResponse($this, $responseData);
+        return $this->response = new CustomerPortalResponse($this, (array) $responseData);
     }
 }

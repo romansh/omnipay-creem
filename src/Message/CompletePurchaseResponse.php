@@ -1,12 +1,22 @@
 <?php
+
 namespace Omnipay\Creem\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 
+/**
+ * Creem Complete Purchase Response
+ *
+ * This class handles the response (usually from a webhook) after a payment 
+ * or subscription event has occurred. It maps Creem event types to 
+ * standard Omnipay response states.
+ */
 class CompletePurchaseResponse extends AbstractResponse
 {
     /**
-     * Check if the payment or subscription event was successful
+     * Check if the payment or subscription event was successful.
+     *
+     * @return bool
      */
     public function isSuccessful(): bool
     {
@@ -18,7 +28,9 @@ class CompletePurchaseResponse extends AbstractResponse
     }
 
     /**
-     * Check if the subscription is in trial period
+     * Check if the subscription is in a trial period (considered pending).
+     *
+     * @return bool
      */
     public function isPending(): bool
     {
@@ -26,7 +38,9 @@ class CompletePurchaseResponse extends AbstractResponse
     }
 
     /**
-     * Check if the subscription was cancelled or expired
+     * Check if the subscription was cancelled or expired.
+     *
+     * @return bool
      */
     public function isCancelled(): bool
     {
@@ -37,7 +51,9 @@ class CompletePurchaseResponse extends AbstractResponse
     }
 
     /**
-     * Check if the event represents a refund
+     * Check if the event represents a refund.
+     *
+     * @return bool
      */
     public function isRefunded(): bool
     {
@@ -45,39 +61,51 @@ class CompletePurchaseResponse extends AbstractResponse
     }
 
     /**
-     * Get the event type from the webhook payload
+     * Get the event type from the webhook payload.
+     *
+     * @return string|null
      */
     public function getEventType(): ?string
     {
-        return $this->data['eventType'] ?? null;
+        return isset($this->data['eventType']) ? (string) $this->data['eventType'] : null;
     }
 
     /**
-     * Get the internal order ID passed when creating the checkout
+     * Get the internal order ID passed during checkout creation.
+     *
+     * @return string|null
      */
     public function getTransactionId(): ?string
     {
-        return $this->data['object']['request_id'] ?? null;
+        return isset($this->data['object']['request_id']) 
+            ? (string) $this->data['object']['request_id'] 
+            : null;
     }
 
     /**
-     * Get the Creem checkout ID
+     * Get the Creem checkout or object ID reference.
+     *
+     * @return string|null
      */
     public function getTransactionReference(): ?string
     {
-        return $this->data['object']['id'] ?? $this->data['id'] ?? null;
+        return (string) ($this->data['object']['id'] ?? $this->data['id'] ?? null);
     }
 
     /**
-     * Get the status or message from the webhook payload
+     * Get the status or message from the webhook payload.
+     *
+     * @return string|null
      */
     public function getMessage(): ?string
     {
-        return $this->data['message'] ?? $this->data['object']['status'] ?? 'ok';
+        return (string) ($this->data['message'] ?? $this->data['object']['status'] ?? 'ok');
     }
 
     /**
-     * Get the code for the event (here, just the event type)
+     * Get the code for the event (mapping to eventType).
+     *
+     * @return string|null
      */
     public function getCode(): ?string
     {
@@ -85,28 +113,46 @@ class CompletePurchaseResponse extends AbstractResponse
     }
 
     /**
-     * Get customer information from the webhook payload
+     * Get customer information from the webhook payload.
+     *
+     * @return array|null
      */
     public function getCustomer(): ?array
     {
-        return $this->data['object']['customer'] ?? null;
+        return isset($this->data['object']['customer']) 
+            ? (array) $this->data['object']['customer'] 
+            : null;
     }
 
     /**
-     * Get product information from the webhook payload
+     * Get product information from the webhook payload.
+     *
+     * @return array|null
      */
     public function getProduct(): ?array
     {
-        return $this->data['object']['product'] ?? null;
+        return isset($this->data['object']['product']) 
+            ? (array) $this->data['object']['product'] 
+            : null;
     }
 
     /**
-     * No redirect URL for webhook response
+     * No redirect URL is applicable for webhook/complete purchase responses.
+     *
+     * @return string|null
      */
-    public function getRedirectUrl(): ?string { return null; }
+    public function getRedirectUrl(): ?string 
+    { 
+        return null; 
+    }
 
     /**
-     * No portal URL for webhook response
+     * No portal URL is applicable for this response type.
+     *
+     * @return string|null
      */
-    public function getPortalUrl(): ?string { return null; }
+    public function getPortalUrl(): ?string 
+    { 
+        return null; 
+    }
 }
