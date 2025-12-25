@@ -1,39 +1,38 @@
 # Omnipay-Creem
 
-⚠️ Early development. The API is mostly stable and can be used, but may still change.
-
+⚠️ **Early development.** The API is mostly stable and can be used, but may still change.
 Examples and documentation are minimal and mostly illustrative.
 
 ## Installation
 
+```bash
 composer require romansh/omnipay-creem:^0.1.0
+```
 
 ## Gateway Overview
 
 This package provides a Creem Gateway for Omnipay.
 
 It supports:
-- Hosted Checkout (redirect)
-- Webhook completion
+* Hosted Checkout (redirect)
+* Webhook completion
 
 ## Usage Example
 
-<?php
-require 'vendor/autoload.php';
+```php
+use Omnipay\Omnipay;
 
-use Omnipay\Creem\Gateway;
-
-// Initialize gateway
-$gateway = new Gateway([
-    'apiKey'    => 'your_api_key',
-    'testMode'  => true,
+$gateway = Omnipay::create('Creem');
+$gateway->initialize([
+    'apiKey' => 'your_api_key',
+    'testMode' => true,
     'productId' => 'your_product_id',
 ]);
 
 // Create a purchase request (Hosted Checkout)
 $response = $gateway->purchase([
-    'amount'    => '10.00',
-    'currency'  => 'USD',
+    'amount' => '10.00',
+    'currency' => 'USD',
     'returnUrl' => 'https://your-site.com/return', // where user is redirected after payment
     'cancelUrl' => 'https://your-site.com/cancel', // optional
 ])->send();
@@ -49,15 +48,16 @@ if ($response->isRedirect()) {
 $complete = $gateway->completePurchase([
     'transactionReference' => 'txn_123',
 ])->send();
+```
 
 ## Gateway Parameters
 
-| Parameter      | Description                       | Default |
+| Parameter | Description | Default |
 |----------------|-----------------------------------|---------|
-| `apiKey`       | Your Creem API key                 | empty   |
-| `testMode`     | Enable sandbox/test mode           | true    |
+| `apiKey` | Your Creem API key | empty |
+| `testMode` | Enable sandbox/test mode | true |
 | `webhookSecret`| Secret for verifying webhook payloads | empty |
-| `productId`    | Creem Product ID                   | empty   |
+| `productId` | Creem Product ID | empty |
 
 ## Notes
 
