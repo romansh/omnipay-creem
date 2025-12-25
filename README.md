@@ -6,7 +6,7 @@ Examples and documentation are minimal and mostly illustrative.
 ## Installation
 
 ```bash
-composer require romansh/omnipay-creem:^0.1.0
+composer require romansh/omnipay-creem:^0.9
 ```
 
 ## Gateway Overview
